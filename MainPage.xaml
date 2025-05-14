@@ -1,0 +1,14 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MyMauiApp.MainPage">
+
+    <VerticalStackLayout Padding="30" Spacing="25">
+        <Label 
+            Text="Καλώς ήρθες στο .NET MAUI!"
+            FontSize="32"
+            HorizontalOptions="Center" />
+        <Button 
+            Text="Πάτησέ με" 
+            Clicked="OnCounterClicked"/>
+    </VerticalStackLayout>
+</ContentPage>
