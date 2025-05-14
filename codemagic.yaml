@@ -5,20 +5,29 @@ workflows:
     environment:
       vars:
         DOTNET_VERSION: "8.0.203"
-        ANDROID_SDK_VERSION: "33"
-      flutter: none
-      xcode: latest
-      android: true
+      groups:
+        - keystore_credentials # αν χρειάζεσαι υπογραφή APK
     scripts:
       - name: Εγκατάσταση .NET SDK
         script: |
-          wget https://dot.net/v1/dotnet-install.sh -O dotnet-install.sh
-          chmod +x dotnet-install.sh
-          ./dotnet-install.sh --version $DOTNET_VERSION
+          curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --version $DOTNET_VERSION
           export PATH=$HOME/.dotnet:$PATH
+          dotnet --info
+
+      - name: Εγκατάσταση MAUI workload
+        script: |
+          export PATH=$HOME/.dotnet:$PATH
+          dotnet workload install maui
+
       - name: Restore dependencies
-        script: dotnet restore MyMauiApp.sln
-      - name: Build Android project
-        script: dotnet publish MyMauiApp/MyMauiApp.csproj -f net8.0-android -c Release -o ./output/android
+        script: |
+          export PATH=$HOME/.dotnet:$PATH
+          dotnet restore MyMauiApp.sln
+
+      - name: Build .NET MAUI Android
+        script: |
+          export PATH=$HOME/.dotnet:$PATH
+          dotnet publish MyMauiApp/MyMauiApp.csproj -f net8.0-android -c Release -o ./output/android
+
     artifacts:
-      - ./output/android/**/*.apk
+      - output/android/**/*.apk
