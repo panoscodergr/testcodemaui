@@ -1,0 +1,24 @@
+workflows:
+  maui-android-build:
+    name: ".NET MAUI Android Build"
+    max_build_duration: 30
+    environment:
+      vars:
+        DOTNET_VERSION: "8.0.203"
+        ANDROID_SDK_VERSION: "33"
+      flutter: none
+      xcode: latest
+      android: true
+    scripts:
+      - name: Εγκατάσταση .NET SDK
+        script: |
+          wget https://dot.net/v1/dotnet-install.sh -O dotnet-install.sh
+          chmod +x dotnet-install.sh
+          ./dotnet-install.sh --version $DOTNET_VERSION
+          export PATH=$HOME/.dotnet:$PATH
+      - name: Restore dependencies
+        script: dotnet restore MyMauiApp.sln
+      - name: Build Android project
+        script: dotnet publish MyMauiApp/MyMauiApp.csproj -f net8.0-android -c Release -o ./output/android
+    artifacts:
+      - ./output/android/**/*.apk
